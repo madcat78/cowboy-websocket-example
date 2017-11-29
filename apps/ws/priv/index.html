@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Tahoma, Geneva, sans-serif;
+      }
+
+      div {
+        display: inline;
+      }
+    </style>
+    <script>
+      function updateStats(memuse) {
+        document.getElementById('otp').innerHTML = memuse.otp_release;
+        document.getElementById('cowboy').innerHTML = memuse.cowboy_version;
+        document.getElementById('stm').innerHTML = memuse.system_total_memory;
+        document.getElementById('fs').innerHTML = memuse.free_swap;
+        document.getElementById('ts').innerHTML = memuse.total_swap;
+        document.getElementById('cm').innerHTML = memuse.cached_memory;
+        document.getElementById('bm').innerHTML = memuse.buffered_memory;
+        document.getElementById('fm').innerHTML = memuse.free_memory;
+        document.getElementById('tm').innerHTML = memuse.total_memory;
+      }
+
+      var host = window.document.location.host.replace(/:.*/, '');
+      //var ws = new WebSocket('ws://' + host + ':8081/websocket');  // standalone config
+      var ws = new WebSocket('wss://' + host + '/websocket');  // heroku config
+      ws.onopen = function () {
+        console.log("connected to websocket");
+        //to avoid error H15 and socket termination: https://devcenter.heroku.com/articles/http-routing#timeouts
+        setInterval(function(){ var date = new Date(); ws.send(JSON.stringify({'keepalive':date.getTime()})); }, 30000);
+      };
+      ws.onmessage = function (event) {
+        updateStats(JSON.parse(event.data));
+      };
+      ws.onclose = function () {
+        console.log("websocket connection closed");
+      };
+    </script>
+  </head>
+  <body>
+    <h2>Erlang websocket example with cowboy</h2>
+    <strong>Server Stats</strong><br>
+    Erlang OTP Major Version: <div id='otp'></div><br>
+    Cowboy Version: <div id='cowboy'></div><br>
+    <br>
+    System Total Memory: <div id='stm'></div><br>
+    Free Swap: <div id='fs'></div><br>
+    Total Swap: <div id='ts'></div><br>
+    Cached Memory: <div id='cm'></div><br>
+    Buffered Memory: <div id='bm'></div><br>
+    Free Memory: <div id='fm'></div><br>
+    Total Memory: <div id='tm'></div><br>
+  </body>
+</html>
