@@ -30,7 +30,7 @@ websocket_info(_Info, State) ->
 ws_send(Pid, SInterval) ->
     Data = memsup:get_system_memory_data(),
     {cowboy, _CowboyD, CowboyV} = lists:keyfind(cowboy, 1, application:which_applications()),
-    Data_jsonb = jiffy:encode({Data ++ [{otp_release, list_to_integer(erlang:system_info(otp_release))}] ++ [{cowboy_version, list_to_binary(CowboyV)}] ++ [{system_time, erlang:system_time()}]}),
+    Data_jsonb = jiffy:encode({Data ++ [{otp_release, list_to_integer(erlang:system_info(otp_release))}] ++ [{cowboy_version, list_to_binary(CowboyV)}] ++ [{system_time, erlang:system_time()}] ++ [{pid, list_to_binary(pid_to_list(self()))}]}),
     erlang:start_timer(SInterval, Pid, Data_jsonb).
 
 

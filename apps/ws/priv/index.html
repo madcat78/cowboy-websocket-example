@@ -26,6 +26,7 @@
         document.getElementById('bm').innerHTML = memuse.buffered_memory;
         document.getElementById('fm').innerHTML = memuse.free_memory;
         document.getElementById('tm').innerHTML = memuse.total_memory;
+        document.getElementById('pid').innerHTML = memuse.pid;
       }
 
       function connect() {
@@ -74,5 +75,6 @@
     Buffered Memory: <div id='bm'></div><br>
     Free Memory: <div id='fm'></div><br>
     Total Memory: <div id='tm'></div><br>
+    Pid: <div id='pid'></div><br>
   </body>
 </html>
